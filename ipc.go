@@ -7,12 +7,11 @@ import (
     beson "github.com/GoblinBear/beson-go"
 )
 
-const socketFile string = "/home/bear/hex.sock"
 var connection net.Conn = nil
 
 // TODO: data pool
 
-func NewHexIpc() error {
+func NewHexIpc(socketFile string) error {
     c, err := net.Dial("unix", socketFile)
     if err != nil {
         fmt.Println(err)
