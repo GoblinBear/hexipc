@@ -1,8 +1,8 @@
 package hexipc
 
 import (
-	"fmt"
-	"net"
+    "fmt"
+    "net"
     
     "beson"
     "beson/types"
@@ -13,44 +13,44 @@ var connection net.Conn = nil
 
 func NewHexIpc() error {
     c, err := net.Dial("unix", socketFile)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	
-	connection = c
-	return nil
+    if err != nil {
+        fmt.Println(err)
+        return err
+    }
+    
+    connection = c
+    return nil
 }
 
 func WriteBuf(data []byte) error {
-	// encode data
+    // encode data
 
 
-	// write data to buffer
-	_, err := connection.Write(data)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
+    // write data to buffer
+    _, err := connection.Write(data)
+    if err != nil {
+        fmt.Println(err)
+        return err
+    }
 
-	return nil
+    return nil
 }
 
 func ReadBuf() error {
-	// read data from buffer
-	buf := make([]byte, 32)
-	n, err := connection.Read(buf)
-	if err != nil {
-		return err
-	}
+    // read data from buffer
+    buf := make([]byte, 32)
+    n, err := connection.Read(buf)
+    if err != nil {
+        return err
+    }
 
-	// decode data
-	anchor, value := beson.Deserialize(buf, 0)
+    // decode data
+    anchor, value := beson.Deserialize(buf, 0)
     fmt.Println("anchor =", anchor)
     fmt.Println("value =", value.(*types.String).Get())
-	
+    
     println("Client got:", buf)
-	println("Client got:", string(buf[0:n]))
+    println("Client got:", string(buf[0:n]))
 
-	return nil
+    return nil
 }
