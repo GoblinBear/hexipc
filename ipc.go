@@ -4,7 +4,7 @@ import (
     "fmt"
     "net"
     
-    "beson"
+    beson "github.com/GoblinBear/beson-go"
 )
 
 const socketFile string = "/home/bear/hex.sock"
