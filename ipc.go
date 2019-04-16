@@ -5,11 +5,12 @@ import (
     "net"
     
     "beson"
-    "beson/types"
 )
 
 const socketFile string = "/home/bear/hex.sock"
 var connection net.Conn = nil
+
+// TODO: data pool
 
 func NewHexIpc() error {
     c, err := net.Dial("unix", socketFile)
@@ -22,12 +23,12 @@ func NewHexIpc() error {
     return nil
 }
 
-func WriteBuf(data []byte) error {
+func WriteBuf(data interface{}) error {
     // encode data
-
+    ser := beson.Serialize(data)
 
     // write data to buffer
-    _, err := connection.Write(data)
+    _, err := connection.Write(ser)
     if err != nil {
         fmt.Println(err)
         return err
@@ -36,21 +37,16 @@ func WriteBuf(data []byte) error {
     return nil
 }
 
-func ReadBuf() error {
+func ReadBuf() (interface{}, error) {
     // read data from buffer
-    buf := make([]byte, 32)
-    n, err := connection.Read(buf)
+    buf := make([]byte, 256)
+    _, err := connection.Read(buf)
     if err != nil {
-        return err
+        fmt.Println(err)
+        return nil, err
     }
 
     // decode data
-    anchor, value := beson.Deserialize(buf, 0)
-    fmt.Println("anchor =", anchor)
-    fmt.Println("value =", value.(*types.String).Get())
-    
-    println("Client got:", buf)
-    println("Client got:", string(buf[0:n]))
-
-    return nil
+    _, value := beson.Deserialize(buf, 0)
+    return value, nil
 }
